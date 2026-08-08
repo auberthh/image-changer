@@ -1,0 +1,114 @@
+/* ============================================================
+   theme-98.css — estética Windows 98
+   Se activa con <body class="theme-98">; la variante nocturna
+   se activa añadiendo también la clase "dark".
+   ============================================================ */
+
+body.theme-98 {
+  --w98-face: #c0c0c0;
+  --w98-face-text: #000;
+  --w98-shadow: #808080;
+  --w98-dark-shadow: #000;
+  --w98-highlight: #fff;
+  --w98-light: #dfdfdf;
+  --w98-title-a: #000080;
+  --w98-title-b: #1084d0;
+  --w98-title-text: #fff;
+  --w98-desktop: #008080;
+
+  background: var(--w98-desktop);
+  color: var(--w98-face-text);
+  font-family: "Pixelated MS Sans Serif", "MS Sans Serif", Tahoma, "Segoe UI", sans-serif;
+}
+
+/* Variante nocturna del tema retro */
+body.theme-98.dark {
+  --w98-face: #3b3b3b;
+  --w98-face-text: #e6e6e6;
+  --w98-shadow: #1a1a1a;
+  --w98-dark-shadow: #000;
+  --w98-highlight: #6e6e6e;
+  --w98-light: #4d4d4d;
+  --w98-title-a: #00003c;
+  --w98-title-b: #0a4a75;
+  --w98-desktop: #003838;
+}
+
+/* Ventanas con biselado clásico */
+body.theme-98 .window {
+  background: var(--w98-face);
+  border: 1px solid;
+  border-color: var(--w98-light) var(--w98-dark-shadow) var(--w98-dark-shadow) var(--w98-light);
+  box-shadow: inset 1px 1px var(--w98-highlight), inset -1px -1px var(--w98-shadow);
+  padding: 2px;
+}
+
+body.theme-98 .title-bar {
+  background: linear-gradient(90deg, var(--w98-title-a), var(--w98-title-b));
+  color: var(--w98-title-text);
+  padding: 3px 4px;
+  font-weight: bold;
+}
+
+body.theme-98 .title-bar-controls button {
+  min-width: 20px;
+  height: 18px;
+  padding: 0;
+  font-size: 11px;
+  line-height: 1;
+}
+
+/* Botones 3D clásicos (las zonas de clic del escenario quedan transparentes) */
+body.theme-98 button:not(.nav-zone) {
+  background: var(--w98-face);
+  color: var(--w98-face-text);
+  font-family: inherit;
+  font-size: 13px;
+  padding: 4px 10px;
+  border: 1px solid;
+  border-color: var(--w98-light) var(--w98-dark-shadow) var(--w98-dark-shadow) var(--w98-light);
+  box-shadow: inset 1px 1px var(--w98-highlight), inset -1px -1px var(--w98-shadow);
+}
+
+body.theme-98 button:not(.nav-zone):active:not(:disabled),
+body.theme-98 button.pressed {
+  border-color: var(--w98-dark-shadow) var(--w98-light) var(--w98-light) var(--w98-dark-shadow);
+  box-shadow: inset 1px 1px var(--w98-shadow), inset -1px -1px var(--w98-highlight);
+}
+
+body.theme-98 .toolbar {
+  border-bottom: 1px solid var(--w98-shadow);
+}
+
+body.theme-98 .toolbar .separator {
+  background: var(--w98-shadow);
+  border-right: 1px solid var(--w98-highlight);
+}
+
+body.theme-98 .stage {
+  border: 2px inset var(--w98-shadow);
+  background: #000;
+}
+
+/* Barra de estado con celdas hundidas */
+body.theme-98 .status-bar span {
+  border: 1px solid;
+  border-color: var(--w98-shadow) var(--w98-highlight) var(--w98-highlight) var(--w98-shadow);
+}
+
+body.theme-98 .settings-body fieldset {
+  border: 1px groove var(--w98-highlight);
+}
+
+body.theme-98 select,
+body.theme-98 input[type="url"] {
+  background: var(--w98-highlight);
+  color: var(--w98-face-text);
+  font-family: inherit;
+  border: 1px solid;
+  border-color: var(--w98-shadow) var(--w98-light) var(--w98-light) var(--w98-shadow);
+}
+
+body.theme-98.dark select {
+  background: var(--w98-light);
+}

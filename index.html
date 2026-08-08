@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>image-changer — Feria STEAM Liceo de Cervantes</title>
+  <meta name="description" content="Visor de diapositivas controlado por gestos. Proyecto de la Feria STEAM del Liceo de Cervantes, sección informática.">
+  <meta name="theme-color" content="#008080">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/theme-98.css">
+  <link rel="stylesheet" href="css/theme-modern.css">
+</head>
+<body class="theme-98">
+
+  <div class="window app-window" id="app-window">
+
+    <!-- Barra de título -->
+    <div class="title-bar">
+      <div class="title-bar-text">
+        <img src="icons/icon.svg" alt="" class="title-icon">
+        image-changer — Feria STEAM · Liceo de Cervantes
+      </div>
+      <div class="title-bar-controls">
+        <button id="btn-settings-top" title="Configuración" aria-label="Configuración">⚙</button>
+      </div>
+    </div>
+
+    <!-- Barra de herramientas -->
+    <div class="toolbar" role="toolbar">
+      <button id="btn-prev" title="Diapositiva anterior (←)">◀ Anterior</button>
+      <button id="btn-next" title="Diapositiva siguiente (→)">Siguiente ▶</button>
+      <span class="separator"></span>
+      <button id="btn-flip" title="Voltear pantalla 180° (F)">🔄 Voltear</button>
+      <button id="btn-zoom-out" title="Alejar (−)">➖ Zoom</button>
+      <button id="btn-zoom-in" title="Acercar (+)">➕ Zoom</button>
+      <button id="btn-reset" title="Restablecer vista (R)">↺ Restablecer</button>
+      <button id="btn-fullscreen" title="Pantalla completa (P)">⛶ Pantalla completa</button>
+      <span class="separator"></span>
+      <button id="btn-auto" title="Modo automático (A)">▶ Automático</button>
+      <button id="btn-camera" title="Activar / desactivar control por gestos con la cámara (C)">📷 Gestos</button>
+      <span class="separator"></span>
+      <button id="btn-load" title="Cargar tus propias imágenes">🖼 Cargar imágenes</button>
+      <input type="file" id="file-input" accept="image/*" multiple hidden>
+      <button id="btn-presentation" title="Cargar una presentación de PowerPoint o Canva">🔗 Presentación</button>
+    </div>
+
+    <!-- Escenario: aquí se muestran las diapositivas -->
+    <main class="stage" id="stage">
+      <div class="slide-container" id="slide-container">
+        <!-- Diapositivas de demostración (se reemplazan al cargar imágenes) -->
+        <section class="slide demo demo-1">
+          <h1>image-changer</h1>
+          <p>Visor de diapositivas controlado por gestos</p>
+          <p class="small">Feria STEAM · Liceo de Cervantes · Sección Informática</p>
+        </section>
+        <section class="slide demo demo-2">
+          <h1>✋ Gestos</h1>
+          <p>Mano a la izquierda → avanza · Mano a la derecha → retrocede</p>
+        </section>
+        <section class="slide demo demo-3">
+          <h1>🙌 Dos manos</h1>
+          <p>Abrir las manos → zoom progresivo · Cerrarlas → restablecer</p>
+        </section>
+        <section class="slide demo demo-4">
+          <h1>🔄 Voltear</h1>
+          <p>La pantalla puede girarse 180°: de arriba abajo y de abajo a arriba</p>
+        </section>
+        <section class="slide demo demo-5">
+          <h1>🖱 También con el mouse</h1>
+          <p>Clic en los bordes para navegar · Rueda para hacer zoom · Botones para todo</p>
+        </section>
+      </div>
+
+      <!-- Zonas de clic para navegar con el mouse -->
+      <button class="nav-zone nav-zone-left" id="zone-prev" title="Anterior" aria-label="Diapositiva anterior">‹</button>
+      <button class="nav-zone nav-zone-right" id="zone-next" title="Siguiente" aria-label="Diapositiva siguiente">›</button>
+
+      <!-- Vista de la cámara para el control por gestos -->
+      <div class="camera-panel hidden" id="camera-panel">
+        <video id="camera-video" playsinline muted hidden></video>
+        <canvas id="camera-canvas" width="320" height="240"></canvas>
+        <div class="gesture-label" id="gesture-label">Cámara apagada</div>
+      </div>
+    </main>
+
+    <!-- Barra de estado -->
+    <div class="status-bar">
+      <span id="status-slide">Diapositiva 1 / 5</span>
+      <span id="status-zoom">Zoom: 100%</span>
+      <span id="status-flip">Orientación: normal</span>
+      <span id="status-mode">Modo: manual</span>
+    </div>
+  </div>
+
+  <!-- Panel de configuración -->
+  <div class="overlay hidden" id="settings-overlay">
+    <div class="window settings-window" role="dialog" aria-labelledby="settings-title">
+      <div class="title-bar">
+        <div class="title-bar-text" id="settings-title">Configuración</div>
+        <div class="title-bar-controls">
+          <button id="btn-settings-close" aria-label="Cerrar">✕</button>
+        </div>
+      </div>
+      <div class="settings-body">
+
+        <fieldset>
+          <legend>Apariencia</legend>
+          <label><input type="radio" name="theme" value="theme-98" checked> Estilo Windows 98</label>
+          <label><input type="radio" name="theme" value="theme-modern"> Estilo moderno</label>
+          <label class="dark-row"><input type="checkbox" id="opt-dark"> 🌙 Modo oscuro</label>
+        </fieldset>
+
+        <fieldset>
+          <legend>Modo automático</legend>
+          <label>Cambiar diapositiva cada
+            <select id="opt-interval">
+              <option value="2000">2 segundos</option>
+              <option value="4000" selected>4 segundos</option>
+              <option value="6000">6 segundos</option>
+              <option value="10000">10 segundos</option>
+            </select>
+          </label>
+        </fieldset>
+
+        <fieldset>
+          <legend>Gestos</legend>
+          <label>Mano a la izquierda:
+            <select id="opt-gesture-left">
+              <option value="next" selected>Siguiente diapositiva</option>
+              <option value="prev">Diapositiva anterior</option>
+            </select>
+          </label>
+          <label>Mano a la derecha:
+            <select id="opt-gesture-right">
+              <option value="prev" selected>Diapositiva anterior</option>
+              <option value="next">Siguiente diapositiva</option>
+            </select>
+          </label>
+          <label>Mantener el puño cerrado (una mano):
+            <select id="opt-gesture-fist">
+              <option value="flip" selected>Voltear pantalla 180°</option>
+              <option value="reset">Modo automático (restablece)</option>
+              <option value="zoom-out">Alejar zoom</option>
+            </select>
+          </label>
+          <label>Abrir dos manos:
+            <select id="opt-gesture-open">
+              <option value="zoom" selected>Zoom progresivo</option>
+              <option value="flip">Voltear pantalla</option>
+            </select>
+          </label>
+          <label>Cerrar dos manos:
+            <select id="opt-gesture-close">
+              <option value="reset" selected>Modo automático (restablece)</option>
+              <option value="zoom-out">Alejar zoom</option>
+            </select>
+          </label>
+          <p class="hint">Activa la cámara con el botón 📷 Gestos. Los cambios se aplican al instante.</p>
+        </fieldset>
+
+        <div class="settings-actions">
+          <button id="btn-settings-ok">Aceptar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Diálogo para cargar presentaciones -->
+  <div class="overlay hidden" id="presentation-overlay">
+    <div class="window settings-window" role="dialog" aria-labelledby="presentation-title">
+      <div class="title-bar">
+        <div class="title-bar-text" id="presentation-title">Cargar presentación</div>
+        <div class="title-bar-controls">
+          <button id="btn-pres-close" aria-label="Cerrar">✕</button>
+        </div>
+      </div>
+      <div class="settings-body">
+
+        <fieldset>
+          <legend>Desde un enlace (Canva, PowerPoint, Google Slides)</legend>
+          <input type="url" id="pres-url" placeholder="https://www.canva.com/design/…">
+          <button id="btn-pres-url">Cargar enlace</button>
+          <p class="hint">
+            Canva: Compartir → «Cualquiera con el enlace puede ver».
+            PowerPoint: enlace de OneDrive o URL directa a un .pptx.
+            ⚠ Una presentación incrustada se navega con sus propios controles
+            (los gestos y botones de la app no pueden entrar en ella).
+            Para controlar un diseño de Canva con gestos, descárgalo como
+            .pptx (Compartir → Descargar → Microsoft PowerPoint) y cárgalo
+            aquí abajo como archivo.
+          </p>
+        </fieldset>
+
+        <fieldset>
+          <legend>Desde un archivo de PowerPoint</legend>
+          <button id="btn-pres-file">Elegir archivo .pptx…</button>
+          <input type="file" id="pres-file" accept=".pptx,.ppsx" hidden>
+          <p class="hint">
+            El archivo se muestra dentro de la app: los gestos, botones y
+            teclado controlan sus diapositivas.
+          </p>
+        </fieldset>
+
+        <p class="hint" id="pres-status"></p>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/settings.js"></script>
+  <script src="js/viewer.js"></script>
+  <script src="js/gestures.js"></script>
+  <script src="js/presentations.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js');
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,136 @@
+/* ============================================================
+   theme-modern.css — estética actual (claro y oscuro)
+   Se activa con <body class="theme-modern">; el modo oscuro
+   se activa añadiendo también la clase "dark".
+   ============================================================ */
+
+body.theme-modern {
+  --m-bg: #eef1f6;
+  --m-surface: #ffffff;
+  --m-surface-2: #f4f6fa;
+  --m-text: #1c2230;
+  --m-text-soft: #5b6474;
+  --m-accent: #3b82f6;
+  --m-accent-text: #ffffff;
+  --m-border: #d7dce5;
+  --m-shadow: 0 8px 24px rgba(20, 30, 60, 0.12);
+
+  background: var(--m-bg);
+  color: var(--m-text);
+  font-family: "Segoe UI", system-ui, -apple-system, Roboto, sans-serif;
+}
+
+body.theme-modern.dark {
+  --m-bg: #0f1420;
+  --m-surface: #1a2130;
+  --m-surface-2: #222b3d;
+  --m-text: #e8ecf4;
+  --m-text-soft: #9aa4b5;
+  --m-accent: #60a5fa;
+  --m-accent-text: #0f1420;
+  --m-border: #2e3950;
+  --m-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+body.theme-modern .window {
+  background: var(--m-surface);
+  border: 1px solid var(--m-border);
+  border-radius: 14px;
+  box-shadow: var(--m-shadow);
+  overflow: hidden;
+}
+
+body.theme-modern .title-bar {
+  background: var(--m-surface-2);
+  color: var(--m-text);
+  padding: 10px 14px;
+  font-weight: 600;
+  border-bottom: 1px solid var(--m-border);
+}
+
+body.theme-modern button:not(.nav-zone) {
+  background: var(--m-surface-2);
+  color: var(--m-text);
+  font-family: inherit;
+  font-size: 13px;
+  padding: 7px 14px;
+  border: 1px solid var(--m-border);
+  border-radius: 8px;
+  transition: background 0.15s, transform 0.1s;
+}
+
+body.theme-modern button:not(.nav-zone):hover:not(:disabled) {
+  background: var(--m-border);
+}
+
+body.theme-modern button:not(.nav-zone):active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+body.theme-modern button.pressed {
+  background: var(--m-accent);
+  color: var(--m-accent-text);
+  border-color: var(--m-accent);
+}
+
+body.theme-modern .title-bar-controls button {
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+}
+
+body.theme-modern .toolbar {
+  background: var(--m-surface);
+  padding: 8px 10px;
+}
+
+body.theme-modern .toolbar .separator {
+  background: var(--m-border);
+}
+
+body.theme-modern .stage {
+  background: #000;
+  margin: 0 10px;
+  border-radius: 10px;
+}
+
+body.theme-modern .status-bar {
+  padding: 8px 12px;
+  color: var(--m-text-soft);
+  font-size: 12.5px;
+}
+
+body.theme-modern .status-bar span {
+  background: var(--m-surface-2);
+  border: 1px solid var(--m-border);
+  border-radius: 999px;
+  padding: 3px 12px;
+}
+
+body.theme-modern .settings-body fieldset {
+  border: 1px solid var(--m-border);
+  border-radius: 10px;
+}
+
+body.theme-modern .settings-body legend {
+  font-weight: 600;
+  padding: 0 6px;
+}
+
+body.theme-modern select,
+body.theme-modern input[type="url"] {
+  background: var(--m-surface-2);
+  color: var(--m-text);
+  font-family: inherit;
+  border: 1px solid var(--m-border);
+  border-radius: 6px;
+  padding: 4px 8px;
+}
+
+body.theme-modern .settings-actions button {
+  background: var(--m-accent);
+  color: var(--m-accent-text);
+  border-color: var(--m-accent);
+  font-weight: 600;
+}
