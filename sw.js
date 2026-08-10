@@ -3,7 +3,7 @@
    como app en Windows y Android, y usarla sin internet.
    ============================================================ */
 
-const CACHE = 'image-changer-v2';
+const CACHE = 'image-changer-v3';
 
 const FILES = [
   './',

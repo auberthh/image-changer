@@ -73,6 +73,7 @@ const Presentations = (() => {
   }
 
   async function loadPptxFile(file) {
+    open();   // que el progreso y los errores se vean también al arrastrar
     try {
       const buffer = await file.arrayBuffer();
 
@@ -85,8 +86,16 @@ const Presentations = (() => {
         return;
       }
 
-      status('Cargando el motor de PowerPoint…');
-      if (!window.pptxPreview) await loadScript(PPTX_CDN);
+      status('Descargando el motor de PowerPoint…');
+      if (!window.pptxPreview) {
+        try {
+          await loadScript(PPTX_CDN);
+        } catch {
+          status('⚠ No se pudo descargar el motor de PowerPoint. Revisa la ' +
+            'conexión a internet (solo se necesita la primera vez).');
+          return;
+        }
+      }
 
       status(`Procesando «${file.name}»…`);
       const stage = document.getElementById('stage');
@@ -119,10 +128,17 @@ const Presentations = (() => {
   // Cada página se renderiza con pdf.js a una imagen que se convierte en
   // una diapositiva de la app, controlable con gestos, botones y teclado.
   async function loadPdfFile(file) {
+    open();   // que el progreso y los errores se vean también al arrastrar
     try {
-      status('Cargando el motor de PDF…');
+      status('Descargando el motor de PDF…');
       if (!window.pdfjsLib) {
-        await loadScript(PDF_CDN);
+        try {
+          await loadScript(PDF_CDN);
+        } catch {
+          status('⚠ No se pudo descargar el motor de PDF. Revisa la conexión ' +
+            'a internet (solo se necesita la primera vez).');
+          return;
+        }
         pdfjsLib.GlobalWorkerOptions.workerSrc = PDF_WORKER;
       }
 
