@@ -223,7 +223,7 @@ const Viewer = (() => {
       e.preventDefault();
       const files = e.dataTransfer.files;
       const first = files[0];
-      if (first && window.Presentations && /\.(pdf|pptx|ppsx)$/i.test(first.name)) {
+      if (first && window.Presentations && /\.(pdf|pptx?|ppsx)$/i.test(first.name)) {
         Presentations.loadFile(first);
       } else {
         loadImages(files);

@@ -74,6 +74,17 @@ const Presentations = (() => {
 
   async function loadPptxFile(file) {
     try {
+      const buffer = await file.arrayBuffer();
+
+      // Un .pptx real es un zip y empieza con "PK". Un .ppt antiguo
+      // (PowerPoint 97-2003) o un archivo dañado no lo es.
+      const head = new Uint8Array(buffer.slice(0, 2));
+      if (head[0] !== 0x50 || head[1] !== 0x4B) {
+        status('⚠ Este archivo no es un .pptx válido (¿es un .ppt antiguo?). ' +
+          'Ábrelo en PowerPoint y usa Guardar como → PDF, y carga ese PDF aquí.');
+        return;
+      }
+
       status('Cargando el motor de PowerPoint…');
       if (!window.pptxPreview) await loadScript(PPTX_CDN);
 
@@ -88,7 +99,7 @@ const Presentations = (() => {
       document.body.appendChild(temp);
 
       const previewer = pptxPreview.init(temp, { width, height });
-      await previewer.preview(await file.arrayBuffer());
+      await previewer.preview(buffer);
 
       const slides = Array.from(temp.querySelectorAll('.pptx-preview-slide-wrapper'));
       if (!slides.length) throw new Error('el archivo no contiene diapositivas legibles');
@@ -99,8 +110,8 @@ const Presentations = (() => {
       close();
     } catch (err) {
       console.error('Presentaciones:', err);
-      status(`⚠ No se pudo abrir el archivo (${err.message}). ` +
-        'También puedes exportarlo como imágenes desde PowerPoint y usar 🖼 Cargar imágenes.');
+      status('⚠ No se pudo abrir el archivo. ' +
+        'Exporta la presentación a PDF y carga ese PDF aquí (copia fiel).');
     }
   }
 
@@ -148,7 +159,7 @@ const Presentations = (() => {
       close();
     } catch (err) {
       console.error('Presentaciones:', err);
-      status(`⚠ No se pudo abrir el PDF (${err.message}).`);
+      status('⚠ No se pudo abrir el PDF. ¿Está completo y sin contraseña?');
     }
   }
 

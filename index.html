@@ -179,32 +179,22 @@
       <div class="settings-body">
 
         <fieldset>
-          <legend>Desde un enlace (Canva, PowerPoint, Google Slides)</legend>
-          <input type="url" id="pres-url" placeholder="https://www.canva.com/design/…">
-          <button id="btn-pres-url">Cargar enlace</button>
+          <legend>⭐ Desde un archivo — PDF: copia fiel + gestos</legend>
+          <button id="btn-pres-file">Elegir archivo .pdf o .pptx…</button>
+          <input type="file" id="pres-file" accept=".pdf,.pptx,.ppsx,.ppt" hidden>
           <p class="hint">
-            Canva: Compartir → «Cualquiera con el enlace puede ver».
-            PowerPoint: enlace de OneDrive o URL directa a un .pptx.
-            ⚠ Una presentación incrustada se navega con sus propios controles
-            (los gestos y botones de la app no pueden entrar en ella).
-            Para controlar un diseño de Canva con gestos, descárgalo como
-            .pptx (Compartir → Descargar → Microsoft PowerPoint) y cárgalo
-            aquí abajo como archivo.
+            Exporta a PDF: en PowerPoint <em>Guardar como → PDF</em>,
+            en Canva <em>Descargar → PDF estándar</em>.
+            (El .pptx puede verse desalineado.)
           </p>
         </fieldset>
 
         <fieldset>
-          <legend>Desde un archivo (recomendado: PDF)</legend>
-          <button id="btn-pres-file">Elegir archivo .pdf o .pptx…</button>
-          <input type="file" id="pres-file" accept=".pdf,.pptx,.ppsx" hidden>
+          <legend>Desde un enlace (Canva, OneDrive, Google Slides)</legend>
+          <input type="url" id="pres-url" placeholder="https://www.canva.com/design/…">
+          <button id="btn-pres-url">Cargar enlace</button>
           <p class="hint">
-            El archivo se muestra dentro de la app: los gestos, botones y
-            teclado controlan sus diapositivas.
-            ⭐ <strong>PDF = copia fiel</strong>: exporta a PDF desde
-            PowerPoint (Archivo → Guardar como → PDF) o Canva
-            (Compartir → Descargar → PDF estándar) y se verá idéntico al
-            original, porque las fuentes viajan dentro del archivo.
-            Un .pptx se reconstruye y puede variar en tipografías y posiciones.
+            Se navega con sus propios controles — los gestos no funcionan aquí.
           </p>
         </fieldset>
 
