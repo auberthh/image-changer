@@ -113,7 +113,7 @@ modelo de MediaPipe Hands (necesita internet); después queda en caché.
 | ✋ Mover una mano a la derecha | Diapositiva anterior |
 | ✊ Mantener el puño cerrado (una mano, ~1 s) | Voltear pantalla 180° |
 | 🙌 Dos manos abiertas, separándolas o juntándolas | Zoom progresivo |
-| ✊✊ Cerrar las dos manos (puños) | Restablecer vista + modo automático |
+| ✊✊ Mantener los dos puños cerrados (~1 s) | Restablecer vista + modo automático |
 
 Para evitar avances accidentales, después de cada gesto la mano debe
 **detenerse un instante** antes de que se acepte el siguiente movimiento,

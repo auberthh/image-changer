@@ -25,6 +25,8 @@ const Gestures = (() => {
   const OPEN_RATIO = 1.45;       // dedos estirados respecto a los nudillos
   const CLOSED_RATIO = 1.05;     // dedos recogidos (puño)
   const FIST_HOLD_MS = 700;      // tiempo con el puño cerrado para voltear
+  const TWO_FIST_HOLD_MS = 600;  // tiempo con ambos puños para el modo automático
+  const PHANTOM_DIST = 0.09;     // dos "manos" más cerca que esto son una duplicada
   const STILL_MS = 250;          // quietud necesaria para rearmar el swipe
   const STILL_DX = 0.05;         // movimiento máximo que cuenta como "quieta"
 
@@ -41,6 +43,7 @@ const Gestures = (() => {
     armed: true,        // tras un swipe, la mano debe detenerse para rearmar
     fistSince: null,    // instante en que se cerró el puño
     fistDone: false,    // el puño ya disparó; hay que abrir la mano de nuevo
+    twoFistSince: null, // instante en que se cerraron ambos puños
   };
 
   const el = {};
@@ -177,9 +180,15 @@ const Gestures = (() => {
   // --- Interpretación de los resultados de MediaPipe ---
   function onResults(results) {
     draw(results);
-    const hands = results.multiHandLandmarks || [];
+    let hands = results.multiHandLandmarks || [];
     const now = performance.now();
     const gestures = Settings.get().gestures;
+
+    // A veces MediaPipe detecta la misma mano duplicada: dos "manos" con
+    // las muñecas casi en el mismo punto se tratan como una sola.
+    if (hands.length === 2 && dist(hands[0][0], hands[1][0]) < PHANTOM_DIST) {
+      hands = [hands[0]];
+    }
 
     if (hands.length === 2) {
       state.trail = [];
@@ -190,6 +199,7 @@ const Gestures = (() => {
 
       if (oa > OPEN_RATIO && ob > OPEN_RATIO) {
         // 🙌 Dos manos abiertas
+        state.twoFistSince = null;
         if (gestures.handsOpen === 'zoom') {
           // Zoom progresivo: la separación entre las muñecas controla la escala
           const separation = dist(a[0], b[0]);
@@ -203,15 +213,26 @@ const Gestures = (() => {
           discrete(gestures.handsOpen, '🙌 Manos abiertas', now);
         }
       } else if (oa < CLOSED_RATIO && ob < CLOSED_RATIO) {
-        // ✊✊ Dos puños cerrados
+        // ✊✊ Dos puños cerrados: hay que MANTENERLOS un momento — una
+        // sola detección ruidosa no debe activar el modo automático
         state.zoomBase = null;
-        discrete(gestures.handsClose, '✊✊ Manos cerradas', now);
+        if (!state.twoFistSince) state.twoFistSince = now;
+        if (now - state.twoFistSince > TWO_FIST_HOLD_MS) {
+          if (discrete(gestures.handsClose, '✊✊ Manos cerradas', now)) {
+            state.twoFistSince = null;
+          }
+        } else {
+          label('✊✊ Mantén los puños…');
+        }
       } else {
         state.zoomBase = null;
+        state.twoFistSince = null;
         label('🙌 Dos manos detectadas');
       }
       return;
     }
+
+    state.twoFistSince = null;
 
     state.zoomBase = null;
 
