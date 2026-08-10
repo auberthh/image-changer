@@ -194,12 +194,17 @@
         </fieldset>
 
         <fieldset>
-          <legend>Desde un archivo de PowerPoint</legend>
-          <button id="btn-pres-file">Elegir archivo .pptx…</button>
-          <input type="file" id="pres-file" accept=".pptx,.ppsx" hidden>
+          <legend>Desde un archivo (recomendado: PDF)</legend>
+          <button id="btn-pres-file">Elegir archivo .pdf o .pptx…</button>
+          <input type="file" id="pres-file" accept=".pdf,.pptx,.ppsx" hidden>
           <p class="hint">
             El archivo se muestra dentro de la app: los gestos, botones y
             teclado controlan sus diapositivas.
+            ⭐ <strong>PDF = copia fiel</strong>: exporta a PDF desde
+            PowerPoint (Archivo → Guardar como → PDF) o Canva
+            (Compartir → Descargar → PDF estándar) y se verá idéntico al
+            original, porque las fuentes viajan dentro del archivo.
+            Un .pptx se reconstruye y puede variar en tipografías y posiciones.
           </p>
         </fieldset>
 

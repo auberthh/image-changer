@@ -217,11 +217,17 @@ const Viewer = (() => {
     document.getElementById('btn-load').addEventListener('click', () => fileInput.click());
     fileInput.addEventListener('change', () => loadImages(fileInput.files));
 
-    // También por arrastrar y soltar
+    // También por arrastrar y soltar (imágenes, PDF o PowerPoint)
     document.addEventListener('dragover', (e) => e.preventDefault());
     document.addEventListener('drop', (e) => {
       e.preventDefault();
-      loadImages(e.dataTransfer.files);
+      const files = e.dataTransfer.files;
+      const first = files[0];
+      if (first && window.Presentations && /\.(pdf|pptx|ppsx)$/i.test(first.name)) {
+        Presentations.loadFile(first);
+      } else {
+        loadImages(files);
+      }
     });
   }
 

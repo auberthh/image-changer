@@ -12,6 +12,8 @@
 
 const Presentations = (() => {
   const PPTX_CDN = 'https://cdn.jsdelivr.net/npm/pptx-preview@1.0.7/dist/pptx-preview.umd.js';
+  const PDF_CDN = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js';
+  const PDF_WORKER = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js';
   const OFFICE_VIEWER = 'https://view.officeapps.live.com/op/embed.aspx?src=';
 
   const el = {};
@@ -102,6 +104,59 @@ const Presentations = (() => {
     }
   }
 
+  // --- Archivo PDF: fidelidad perfecta (las fuentes viajan dentro) ---
+  // Cada página se renderiza con pdf.js a una imagen que se convierte en
+  // una diapositiva de la app, controlable con gestos, botones y teclado.
+  async function loadPdfFile(file) {
+    try {
+      status('Cargando el motor de PDF…');
+      if (!window.pdfjsLib) {
+        await loadScript(PDF_CDN);
+        pdfjsLib.GlobalWorkerOptions.workerSrc = PDF_WORKER;
+      }
+
+      status(`Procesando «${file.name}»…`);
+      const pdf = await pdfjsLib.getDocument({ data: await file.arrayBuffer() }).promise;
+
+      // Nitidez: se renderiza a ~1,5× la altura del escenario (con tope,
+      // para que un PDF largo no agote la memoria)
+      const stage = document.getElementById('stage');
+      const targetHeight = Math.min(1600, Math.max(720, stage.clientHeight * 1.5));
+
+      const nodes = [];
+      for (let p = 1; p <= pdf.numPages; p++) {
+        status(`Renderizando diapositiva ${p} de ${pdf.numPages}…`);
+        const page = await pdf.getPage(p);
+        const base = page.getViewport({ scale: 1 });
+        const viewport = page.getViewport({ scale: targetHeight / base.height });
+
+        const canvas = document.createElement('canvas');
+        canvas.width = Math.round(viewport.width);
+        canvas.height = Math.round(viewport.height);
+        await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
+
+        // Imagen comprimida en lugar del canvas: mucha menos memoria
+        const blob = await new Promise((r) => canvas.toBlob(r, 'image/png'));
+        const img = document.createElement('img');
+        img.src = URL.createObjectURL(blob);
+        img.alt = `Diapositiva ${p}`;
+        nodes.push(img);
+      }
+
+      Viewer.loadRenderedSlides(nodes);
+      status('');
+      close();
+    } catch (err) {
+      console.error('Presentaciones:', err);
+      status(`⚠ No se pudo abrir el PDF (${err.message}).`);
+    }
+  }
+
+  function loadFile(file) {
+    if (/\.pdf$/i.test(file.name)) return loadPdfFile(file);
+    return loadPptxFile(file);
+  }
+
   // --- Diálogo ---
   function status(text) { el.status.textContent = text; }
   function open() { el.overlay.classList.remove('hidden'); el.url.focus(); }
@@ -124,11 +179,11 @@ const Presentations = (() => {
 
     document.getElementById('btn-pres-file').addEventListener('click', () => el.file.click());
     el.file.addEventListener('change', () => {
-      if (el.file.files[0]) loadPptxFile(el.file.files[0]);
+      if (el.file.files[0]) loadFile(el.file.files[0]);
     });
   }
 
   document.addEventListener('DOMContentLoaded', init);
 
-  return { normalizeUrl, loadFromUrl, loadPptxFile };
+  return { normalizeUrl, loadFromUrl, loadFile, loadPptxFile, loadPdfFile };
 })();

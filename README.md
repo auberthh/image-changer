@@ -86,6 +86,20 @@ candado en la barra de direcciones.
 
 ## Presentaciones de PowerPoint y Canva
 
+¿Qué formato conviene? Guía rápida de fidelidad:
+
+| Formato | ¿Se ve igual al original? | ¿Gestos y botones? |
+|---|---|---|
+| **PDF** (⭐ recomendado) | Sí, copia fiel — las fuentes viajan dentro | ✅ |
+| Imágenes exportadas (PNG/JPG) | Sí, copia fiel | ✅ |
+| Archivo .pptx | Aproximada: sin las fuentes originales puede variar | ✅ |
+| Enlace incrustado (Canva/OneDrive) | Sí, lo dibuja el servicio original | ❌ (sus controles) |
+
+**El camino recomendado**: exporta a PDF — en PowerPoint *Archivo →
+Guardar como → PDF*, en Canva *Compartir → Descargar → PDF estándar* —
+y carga ese archivo. Cada página se convierte en una diapositiva idéntica
+al original, controlable con gestos.
+
 Botón **🔗 Presentación**, con dos opciones:
 
 - **Enlace**: pega un enlace de **Canva** (Compartir → «Cualquiera con el
@@ -97,8 +111,9 @@ Botón **🔗 Presentación**, con dos opciones:
   (es una barrera de seguridad del navegador entre dominios).
   💡 Para controlar un diseño de Canva con gestos: descárgalo como .pptx
   (Compartir → Descargar → Microsoft PowerPoint) y cárgalo como archivo.*
-- **Archivo .pptx**: se renderiza dentro de la app (con `pptx-preview`), así
-  cada diapositiva se convierte en una diapositiva de image-changer y **los
+- **Archivo .pdf o .pptx** (también arrastrando y soltando): se renderiza
+  dentro de la app (PDF con `pdf.js`, pptx con `pptx-preview`), así cada
+  diapositiva se convierte en una diapositiva de image-changer y **los
   gestos, botones y teclado sí la controlan**. Requiere internet la primera
   vez para descargar el motor de renderizado.
 
